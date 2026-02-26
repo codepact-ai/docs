@@ -1,0 +1,41 @@
+---
+title: Install the GitHub App
+description: Connect CodePact AI to your GitHub organization in minutes.
+---
+
+## Prerequisites
+
+- A GitHub Organization (not a personal account)
+- Organization **Owner** role (required to install GitHub Apps)
+- A CodePact AI account — [Request Access →](https://codepact.ai/early-access)
+
+## Step 1: Authorize the GitHub App
+
+1. Log in to [codepact.ai](https://codepact.ai) with your GitHub account
+2. Click **Connect Organization** on the dashboard
+3. You will be redirected to GitHub's App installation flow
+4. Select your organization and choose **All repositories** (recommended) or specific repositories
+5. Click **Install & Authorize**
+
+<Note>
+CodePact AI uses a GitHub App (not a personal token) for all GitHub operations. This gives fine-grained, auditable permissions that can be revoked at any time.
+</Note>
+
+## What Permissions Does It Request?
+
+| Permission | Reason |
+|---|---|
+| **Repository contents** (read/write) | Distribute files (LICENSE, CODEOWNERS, workflows) |
+| **Administration** (read/write) | Enforce branch protection and repository settings |
+| **Custom properties** (read/write) | Route repos to teams via `codepact-team` property |
+| **Members** (read) | Resolve team membership for Pact assignment |
+| **Webhooks** (read) | Detect configuration drift in real time |
+| **Pull requests** (read/write) | Create PRs for file distribution in `pr` mode |
+
+→ See [GitHub App Permissions](/docs/setup/github-app-permissions) for the full breakdown.
+
+## Step 2: Continue the Quickstart
+
+<Card title="Connect an Organization →" icon="building" href="/docs/quickstart/connect-organization">
+  Your GitHub App is installed. Now configure your first organization in CodePact.
+</Card>

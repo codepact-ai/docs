@@ -1,68 +1,161 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "CodePact AI",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#fb970f",
+    "light": "#fdb44b",
+    "dark": "#e8850d"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://codepact.ai"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/codepact-ai"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Request Access",
+      "href": "https://codepact.ai/early-access"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Docs",
+        "icon": "book-open",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "docs/what-is-codepact",
+              "docs/quickstart/install-github-app",
+              "docs/quickstart/connect-organization",
+              "docs/quickstart/first-pact",
+              "docs/quickstart/dashboard-overview"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Setup",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "docs/setup/github-app-permissions",
+              "docs/setup/organization-settings",
+              "docs/setup/custom-properties",
+              "docs/setup/invite-team-members"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Core Guides",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "docs/guides/org-baseline",
+              "docs/guides/team-pacts",
+              "docs/guides/profiles",
+              "docs/guides/templates",
+              "docs/guides/file-distribution",
+              "docs/guides/exceptions",
+              "docs/guides/enforcement-modes"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "GitOps",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "docs/gitops/overview",
+              "docs/gitops/governance-repo-setup",
+              "docs/gitops/modes",
+              "docs/gitops/codepact-yaml",
+              "docs/gitops/pact-yaml",
+              "docs/gitops/syncing-changes",
+              "docs/gitops/conflict-resolution"
+            ]
+          },
+          {
+            "group": "AI Features",
+            "pages": [
+              "docs/ai/policy-assistant",
+              "docs/ai/recommendations",
+              "docs/ai/sharing-reports"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "Concepts",
+        "icon": "lightbulb",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Core Concepts",
             "pages": [
-              "api-reference/introduction"
+              "concepts/governance-model",
+              "concepts/pacts",
+              "concepts/profiles",
+              "concepts/templates",
+              "concepts/groups",
+              "concepts/custom-properties",
+              "concepts/only-stricter-rule",
+              "concepts/policy-resolution",
+              "concepts/gitops-vs-ui",
+              "concepts/enforcement-lifecycle",
+              "concepts/platform-architecture"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CLI",
+        "icon": "square-terminal",
+        "groups": [
+          {
+            "group": "CLI Reference",
+            "pages": [
+              "cli/installation",
+              "cli/authentication",
+              "cli/global-flags",
+              "cli/config-file"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Commands",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "cli/commands/auth",
+              "cli/commands/org",
+              "cli/commands/repo",
+              "cli/commands/team",
+              "cli/commands/pact",
+              "cli/commands/validate",
+              "cli/commands/content",
+              "cli/commands/git",
+              "cli/commands/pr"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "icon": "history",
+        "groups": [
+          {
+            "group": "Releases",
+            "pages": [
+              "changelog/index"
             ]
           }
         ]
@@ -71,52 +164,70 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "GitHub",
+          "href": "https://github.com/codepact-ai",
+          "icon": "github"
         },
         {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Request Access",
+          "href": "https://codepact.ai/early-access",
+          "icon": "rocket"
         }
       ]
     }
   },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+      "github": "https://github.com/codepact-ai",
+      "linkedin": "https://www.linkedin.com/company/codepact-ai"
+    },
+    "links": [
+      {
+        "header": "Product",
+        "items": [
+          {
+            "label": "Pricing",
+            "href": "https://codepact.ai/pricing"
+          },
+          {
+            "label": "Request Access",
+            "href": "https://codepact.ai/early-access"
+          },
+          {
+            "label": "Changelog",
+            "href": "https://docs.codepact.ai/changelog"
+          }
+        ]
+      },
+      {
+        "header": "Company",
+        "items": [
+          {
+            "label": "Privacy Policy",
+            "href": "https://codepact.ai/privacy"
+          },
+          {
+            "label": "Terms of Service",
+            "href": "https://codepact.ai/terms"
+          },
+          {
+            "label": "Refund Policy",
+            "href": "https://codepact.ai/refund"
+          }
+        ]
+      }
+    ]
   }
 }

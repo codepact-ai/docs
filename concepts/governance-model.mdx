@@ -1,0 +1,61 @@
+---
+title: The Governance Model
+description: How CodePact AI layers policies to give every team the right level of governance.
+---
+
+## Two-Dimensional Governance
+
+Traditional GitHub org settings are one-dimensional — one rule applies to all repositories equally. CodePact introduces **two-dimensional governance**: an org-wide baseline (horizontal) combined with team-specific Pacts (vertical).
+
+### The 5-Layer Model
+
+Policies are calculated by stacking five layers, from most general to most specific:
+
+```
+Layer 1: Org Baseline          ← Foundation, cannot be weakened
+    +
+Layer 2: Compliance Profiles   ← SOC2, HIPAA, PCI-DSS requirements
+    +
+Layer 3: Team Pact             ← Team-specific rules
+    +
+Layer 4: Template Settings     ← Repo template defaults
+    -
+Layer 5: Approved Exceptions   ← Time-limited relaxations
+    =
+Effective Policy               ← What actually applies to a repo
+```
+
+### The "Only Stricter" Rule
+
+The most important constraint in CodePact: **layers can only add requirements, never remove them**.
+
+- A Team Pact that requires 1 approval cannot override an Org Baseline that requires 2
+- A Profile's settings always win over a Pact's if they are stricter
+- Exceptions are the only way to relax a requirement — and they require approval
+
+This ensures security teams can set a floor that **cannot be bypassed** by any team or template.
+
+## Enforcement Modes
+
+Every Pact operates in one of three modes:
+
+| Mode | Behavior |
+|---|---|
+| **AUDIT** | Monitor and report drift. No automated fixes. |
+| **WARN** | Alert stakeholders on drift. No automated fixes. |
+| **ENFORCED** | Auto-remediate drift. Settings are restored if changed. |
+
+**Recommended journey**: Start in `AUDIT` → review the compliance report → fix surprises → `WARN` → `ENFORCED`.
+
+## Policy Resolution Example
+
+Given a repo owned by the Platform team, with SOC2 compliance:
+
+| Source | `required_approvals` |
+|---|---|
+| Org Baseline | `1` |
+| SOC2 Profile | `2` |
+| Platform Team Pact | `2` |
+| Effective Policy | **`2`** (maximum wins) |
+
+→ See [Policy Resolution Order](/concepts/policy-resolution) for the full merge algorithm.

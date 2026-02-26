@@ -1,0 +1,63 @@
+---
+title: What is CodePact AI?
+description: GitHub organization governance that gives every team the right level of freedom and security.
+---
+
+import { Card, CardGroup } from '@mintlify/components';
+
+## The Problem
+
+GitHub's organization settings apply the same rules to **all repositories** — but your teams don't have identical needs.
+
+| Team | Need | Problem |
+|---|---|---|
+| Platform | Strict CI/CD gates, 2+ approvals | ✅ Works fine |
+| Data Science | Fast iteration, experiment flexibility | ❌ Blocked by platform rules |
+| Security | Signed commits, 3+ approvals | ❌ Rules too lenient |
+| Open Source | Community-friendly workflow | ❌ Internal rules don't fit |
+
+## The Solution: Layered Governance
+
+CodePact AI introduces **Pacts** — composable governance policies that stack on top of an org-wide baseline. Every layer can only add stricter requirements, never weaken them.
+
+```
+Org Baseline  +  Team Pact  +  Profile  +  Template  =  Effective Policy
+```
+
+→ Security teams set a floor that **cannot be undermined**.
+→ Teams get exactly the rules they need without affecting others.
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="Org Baseline" icon="shield">
+    Set a minimum security floor for all repositories. Branch protection, secret scanning, Dependabot — enforced everywhere.
+  </Card>
+  <Card title="Team Pacts" icon="users">
+    Layer team-specific governance on top of the baseline. The platform team can require signed commits; data science doesn't have to.
+  </Card>
+  <Card title="GitOps-First" icon="git-branch">
+    Manage all governance as code in a dedicated `governance-repo`. Review changes via pull requests, just like your application code.
+  </Card>
+  <Card title="File Distribution" icon="files">
+    Sync LICENSE, SECURITY.md, CODEOWNERS, and GitHub Actions workflows across hundreds of repos automatically.
+  </Card>
+  <Card title="Compliance Profiles" icon="clipboard-check">
+    Apply SOC2, HIPAA, or PCI-DSS compliance requirements to specific repos with a single line of YAML.
+  </Card>
+  <Card title="AI-Powered" icon="sparkles">
+    Ask your governance data questions in natural language. Get AI-assisted policy recommendations based on your org's risk profile.
+  </Card>
+</CardGroup>
+
+## How It Works
+
+1. **Install the GitHub App** on your organization
+2. **Connect your org** in the CodePact dashboard
+3. **Define your Org Baseline** — the minimum policy for all repos
+4. **Create Team Pacts** — additional rules per team
+5. **Enable enforcement** — CodePact auto-remediates drift in real time
+
+<Card title="Ready to start?" icon="rocket" href="/docs/quickstart/install-github-app">
+  Follow the Quickstart to get CodePact running in under 15 minutes.
+</Card>

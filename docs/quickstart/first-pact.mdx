@@ -1,0 +1,79 @@
+---
+title: Your First Pact
+description: Create an Org Baseline pact to set the governance floor for your entire organization.
+---
+
+## What is an Org Baseline?
+
+The **Org Baseline** is the minimum set of rules that apply to **all repositories** in your organization. No team can create a Pact that weakens the Org Baseline — they can only add stricter requirements.
+
+Think of it as the security floor of your organization.
+
+## Create the Baseline via the UI
+
+1. In the Console, go to **Pacts → Org Baseline**
+2. Click **Create Baseline**
+3. Configure the settings you want to enforce everywhere:
+
+### Recommended Starter Baseline
+
+| Setting | Recommended Value | Why |
+|---|---|---|
+| Required PR reviews | `1` | Basic code review |
+| Dismiss stale reviews | `true` | Prevents stale approvals |
+| Secret scanning | `enabled` | Catches leaked credentials |
+| Dependabot alerts | `enabled` | Keeps dependencies safe |
+| Delete branch on merge | `true` | Keeps repos clean |
+| Allow merge commits | `disabled` | Cleaner git history |
+
+4. Set **Enforcement Mode** to `AUDIT` ← Start here, always
+5. Click **Save Pact**
+
+<Tip>
+Start in `AUDIT` mode. CodePact will identify all repos that would fail this baseline **before** enforcing anything. Review the compliance report, fix surprises, then move to `WARN` and eventually `ENFORCED`.
+</Tip>
+
+## Or Use GitOps (YAML)
+
+If you prefer code-first, create `pacts/org-baseline.yaml` in your governance repo:
+
+```yaml
+name: Organization Baseline
+type: org_baseline
+
+enforcement_mode: audit
+
+settings:
+  branch_protection:
+    default_branch:
+      require_pull_request: true
+      required_approvals: 1
+      dismiss_stale_reviews: true
+      require_conversation_resolution: true
+
+  security:
+    secret_scanning: true
+    secret_scanning_push_protection: true
+    dependabot_alerts: true
+    dependabot_security_updates: true
+
+  repository:
+    delete_branch_on_merge: true
+    allow_squash_merge: true
+    allow_merge_commit: false
+    allow_rebase_merge: true
+```
+
+→ See [GitOps Overview](/docs/gitops/overview) for how to set up a governance repo.
+
+## Check the Compliance Report
+
+After saving, CodePact will run a scan across all your repos. Go to **Compliance → Overview** to see:
+- How many repos pass / fail each rule
+- Which specific settings are drifting
+
+## Next Step
+
+<Card title="Explore the Dashboard →" icon="layout-dashboard" href="/docs/quickstart/dashboard-overview">
+  Your baseline is set. Here's what the rest of the CodePact console looks like.
+</Card>

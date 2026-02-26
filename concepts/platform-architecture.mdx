@@ -1,0 +1,62 @@
+---
+title: Platform Architecture
+description: How CodePact AI is built — services, data flow, and infrastructure overview.
+---
+
+## High-Level Architecture
+
+CodePact AI is a cloud-native platform running on Google Kubernetes Engine (GKE), with Cloudflare handling edge routing and DDoS protection.
+
+![CodePact AI Production Architecture](https://storage.googleapis.com/second-petal-295822.appspot.com/elements/elements%3Aee1bb75e297a52b4a904eb88ce80cdf010a0395fff9640386cf0d6f1d021d6f3.png)
+
+[View interactive diagram in Eraser →](https://app.eraser.io/workspace/jEsg0w3YufCgzzanoNwa)
+
+## Components
+
+### Edge Layer
+| Component | Technology | Role |
+|---|---|---|
+| CDN | Cloudflare | TLS termination, caching, DDoS protection |
+| Geo-Router | Cloudflare Workers | Routes GitHub webhooks to the correct region |
+
+### Application Layer (GKE)
+| Component | Technology | Role |
+|---|---|---|
+| Web App | Next.js + React | Dashboard UI, Server Actions, API routes |
+| Auth | Better Auth | GitHub OAuth, session management |
+| Webhook Processor | Go service | Receives and processes GitHub events |
+| Reconciler | Go CronJob | Scheduled policy enforcement |
+
+### Messaging Layer
+| Component | Technology | Role |
+|---|---|---|
+| Pub/Sub | Dapr + NATS | Decoupled async event delivery |
+
+### Data Layer
+| Component | Technology | Role |
+|---|---|---|
+| Database | CloudNativePG (self-hosted Postgres) | All platform state and audit logs |
+| ORM | Drizzle | Type-safe database access from Next.js |
+
+### Shared Libraries (Go)
+| Package | Role |
+|---|---|
+| `pkg/github-client` | All GitHub API operations |
+| `pkg/governance` | Policy evaluation and merging |
+| `pkg/api` | Internal REST API client |
+
+## Webhook Event Flow
+
+1. GitHub fires a webhook event to your organization's webhook endpoint
+2. The **Cloudflare Geo-Router** validates the HMAC signature and forwards to GKE
+3. The **Webhook Processor** receives the event and routes it to the appropriate handler
+4. The handler publishes a message to **NATS via Dapr**
+5. The **Reconciler** picks up the event and evaluates the current policy
+6. If drift is detected and enforcement mode is `ENFORCED`, the Reconciler calls the **GitHub API** to restore the correct settings
+
+## Security
+
+- All credentials are stored in GKE Secret Manager
+- GitHub App private keys are never exposed to the frontend
+- All API routes require authenticated sessions validated by Better Auth
+- Webhook payloads are validated with HMAC-SHA256 before processing

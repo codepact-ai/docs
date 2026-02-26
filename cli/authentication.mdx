@@ -1,0 +1,59 @@
+---
+title: Authentication
+description: Connect the CodePact CLI to your GitHub account.
+---
+
+## Login with GitHub
+
+The easiest way to authenticate is via the interactive login flow:
+
+```bash
+codepact auth login
+```
+
+This opens a browser window and uses the GitHub OAuth flow. Your token is saved to `~/.config/codepact/config.yaml`.
+
+## Using a Token Directly
+
+### Via Environment Variable
+
+```bash
+export GITHUB_TOKEN=ghp_yourtoken
+codepact repo list --org my-org
+```
+
+### Via Flag
+
+```bash
+codepact --token ghp_yourtoken repo list --org my-org
+```
+
+### Via `gh` CLI (automatic)
+
+If you are already authenticated with the [GitHub CLI](https://cli.github.com), `codepact` will automatically use your `gh` token — no setup needed.
+
+```bash
+gh auth login        # Authenticate with gh CLI
+codepact repo list   # Works without any --token flag
+```
+
+## Token Resolution Order
+
+The CLI resolves your GitHub token in this order:
+
+1. `--token` flag
+2. `GITHUB_TOKEN` environment variable
+3. Token stored in `~/.config/codepact/config.yaml`
+4. Token from `gh` CLI
+
+## Required Token Scopes
+
+| Scope | Required for |
+|---|---|
+| `repo` | Reading repository settings |
+| `admin:org` | Applying organization-level settings |
+| `read:org` | Listing teams and members |
+
+<Tip>
+Use a GitHub App token or fine-grained PAT for production scripts. Classic PATs with `repo` scope have broad access.
+</Tip>

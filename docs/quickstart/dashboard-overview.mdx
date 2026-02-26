@@ -1,0 +1,39 @@
+---
+title: Dashboard Overview
+description: A tour of the CodePact console and what each section does.
+---
+
+## Console Sections
+
+After connecting your organization, you'll land on the **Console** dashboard. Here's what each section is for:
+
+### Organizations
+An overview of all GitHub organizations connected to CodePact. Shows aggregate compliance scores, number of repos, and active enforcement status.
+
+### Repositories
+A full list of all repositories with:
+- **Compliance score** — percentage of governance rules currently passing
+- **Team** — which team Pact is applied
+- **Drift status** — whether settings have drifted from the defined Pact
+
+### Teams
+Team Pacts and their enforcement status. Click a team to see which repos are assigned and how each one scores.
+
+### Pacts (Pact Editor)
+Create, edit, and manage Pacts using the visual editor or raw YAML. See how Pacts from different layers combine into the effective policy for a repo.
+
+### Compliance
+Organization-wide compliance reporting. Filter by team, profile, or data classification. Export reports as CSV or JSON.
+
+### Settings
+Organization-level settings including:
+- GitOps mode configuration
+- Custom property schema
+- Notification channels
+- GitHub App connection status
+
+## Next Steps
+
+<Card title="Create a Team Pact →" icon="users" href="/docs/guides/team-pacts">
+  Add governance rules specific to a team on top of your org baseline.
+</Card>

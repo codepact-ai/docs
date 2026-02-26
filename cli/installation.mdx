@@ -1,0 +1,39 @@
+---
+title: Installation
+description: Install the CodePact CLI to manage your GitHub governance from the terminal.
+---
+
+## Install via Homebrew (macOS / Linux)
+
+```bash
+brew install codepact-ai/tap/codepact
+```
+
+## Install via Go
+
+```bash
+go install github.com/codepact-ai/codepact/cmd/codepact@latest
+```
+
+## Download Binary
+
+Pre-built binaries are available on the [GitHub Releases](https://github.com/codepact-ai/codepact/releases) page.
+
+| Platform | Download |
+|---|---|
+| macOS (arm64) | `codepact_darwin_arm64.tar.gz` |
+| macOS (amd64) | `codepact_darwin_amd64.tar.gz` |
+| Linux (amd64) | `codepact_linux_amd64.tar.gz` |
+| Windows | `codepact_windows_amd64.zip` |
+
+## Verify Installation
+
+```bash
+codepact --version
+```
+
+## Next Step
+
+<Card title="Authenticate →" icon="key" href="/cli/authentication">
+  Connect the CLI to your GitHub account and CodePact workspace.
+</Card>

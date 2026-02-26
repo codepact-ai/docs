@@ -1,0 +1,51 @@
+---
+title: Connect an Organization
+description: Configure your GitHub organization in the CodePact dashboard.
+---
+
+## After Installing the App
+
+Once the GitHub App is installed, CodePact will automatically detect your organization and begin an initial sync.
+
+## Step 1: Select Your Organization
+
+1. Go to the [CodePact Console](https://codepact.ai/console)
+2. Your organization will appear under **Organizations**
+3. Click **Configure** to open the setup wizard
+
+## Step 2: Initial Repository Sync
+
+CodePact syncs all repositories from your organization. This may take a few minutes for large orgs.
+
+During the sync, CodePact will:
+- Import all repositories and their current settings
+- Detect existing branch protection rules
+- Map repos to GitHub teams
+- Report the **current compliance score** for each repo
+
+<Note>
+No changes are made to your repositories during the initial sync. CodePact operates in **AUDIT mode** by default — it observes and reports, but does not enforce.
+</Note>
+
+## Step 3: Set Up Custom Properties (Recommended)
+
+CodePact uses [GitHub Custom Properties](https://docs.github.com/en/organizations/managing-organization-settings/managing-custom-properties-for-repositories-in-your-organization) to route repositories to teams.
+
+CodePact will offer to create the standard properties automatically:
+
+| Property | Type | Purpose |
+|---|---|---|
+| `codepact-team` | Single select | Routes repos to team Pacts |
+| `codepact-data-class` | Single select | Data sensitivity level |
+| `codepact-compliance` | Multi select | Compliance frameworks |
+| `codepact-lifecycle` | Single select | Repo maturity stage |
+
+Click **Create Properties** to let CodePact set these up in your org, or skip and create them manually.
+
+→ See [Custom Properties Setup](/docs/setup/custom-properties) for details.
+
+## Step 4: Continue the Quickstart
+
+<Card title="Create Your First Pact →" icon="shield" href="/docs/quickstart/first-pact">
+  Your org is connected. Now define the governance baseline for all your repositories.
+</Card>
