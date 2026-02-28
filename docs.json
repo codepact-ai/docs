@@ -139,7 +139,6 @@
       {
         "tab": "API Reference",
         "icon": "code",
-        "openapi": "api-reference/openapi.yaml",
         "groups": [
           {
             "group": "Overview",
@@ -149,45 +148,51 @@
           },
           {
             "group": "Health",
+            "openapi": "api-reference/openapi.yaml",
             "pages": [
-              "api-reference/health/get-health"
+              "GET /health"
             ]
           },
           {
             "group": "CLI Authentication",
+            "openapi": "api-reference/openapi.yaml",
             "pages": [
-              "api-reference/cli-auth/initiate-device-auth",
-              "api-reference/cli-auth/poll-device-token"
+              "POST /v1/auth/device",
+              "POST /v1/auth/device/token"
             ]
           },
           {
             "group": "CLI Context",
+            "openapi": "api-reference/openapi.yaml",
             "pages": [
-              "api-reference/cli-verify/verify-cli-context"
+              "GET /v1/verify"
             ]
           },
           {
             "group": "Organizations",
+            "openapi": "api-reference/openapi.yaml",
             "pages": [
-              "api-reference/user-portfolio/get-user-portfolio",
-              "api-reference/user-portfolio/warm-user-cache"
+              "GET /user/installations",
+              "POST /user/warm-cache"
             ]
           },
           {
             "group": "Installations",
+            "openapi": "api-reference/openapi.yaml",
             "pages": [
-              "api-reference/installations/get-installation-repositories",
-              "api-reference/installations/sync-installation-repositories",
-              "api-reference/installations/sync-installation-security",
-              "api-reference/installations/initiate-uninstall"
+              "GET /installations/{id}/repositories",
+              "POST /installations/{id}/sync",
+              "POST /installations/{id}/sync-security",
+              "POST /installations/{id}/uninstall"
             ]
           },
           {
             "group": "AI Chat",
+            "openapi": "api-reference/openapi.yaml",
             "pages": [
-              "api-reference/ai-chat/create-ai-thread",
-              "api-reference/ai-chat/stream-ai-run",
-              "api-reference/ai-chat/get-thread-state"
+              "POST /ai/langgraph/threads",
+              "POST /ai/langgraph/threads/{threadId}/runs/stream",
+              "GET /ai/langgraph/threads/{threadId}/state"
             ]
           }
         ]
