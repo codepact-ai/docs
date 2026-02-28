@@ -148,14 +148,14 @@
           },
           {
             "group": "Health",
-            "openapi": "api-reference/openapi.yaml",
+            "openapi": "api-reference/openapi.json",
             "pages": [
               "GET /health"
             ]
           },
           {
             "group": "CLI Authentication",
-            "openapi": "api-reference/openapi.yaml",
+            "openapi": "api-reference/openapi.json",
             "pages": [
               "POST /v1/auth/device",
               "POST /v1/auth/device/token"
@@ -163,14 +163,14 @@
           },
           {
             "group": "CLI Context",
-            "openapi": "api-reference/openapi.yaml",
+            "openapi": "api-reference/openapi.json",
             "pages": [
               "GET /v1/verify"
             ]
           },
           {
             "group": "Organizations",
-            "openapi": "api-reference/openapi.yaml",
+            "openapi": "api-reference/openapi.json",
             "pages": [
               "GET /user/installations",
               "POST /user/warm-cache"
@@ -178,7 +178,7 @@
           },
           {
             "group": "Installations",
-            "openapi": "api-reference/openapi.yaml",
+            "openapi": "api-reference/openapi.json",
             "pages": [
               "GET /installations/{id}/repositories",
               "POST /installations/{id}/sync",
@@ -188,7 +188,7 @@
           },
           {
             "group": "AI Chat",
-            "openapi": "api-reference/openapi.yaml",
+            "openapi": "api-reference/openapi.json",
             "pages": [
               "POST /ai/langgraph/threads",
               "POST /ai/langgraph/threads/{threadId}/runs/stream",
