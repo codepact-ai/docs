@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
     "title": "CodePact AI API",
     "description": "REST API for CodePact AI — the GitHub organization governance platform.\n\n## Authentication\n\n### CLI API (v1)\nThe v1 endpoints use **Bearer token** authentication. Obtain a token via the\nDevice Authorization Flow (`POST /api/v1/auth/device` → `POST /api/v1/auth/device/token`).\n\nTokens are prefixed with `cp_` and are persistent (no expiry by default).\n\n### Dashboard API\nAll `/api/installations/*` and `/api/user/*` endpoints require a valid **session cookie**\nobtained via GitHub OAuth login at `POST /api/auth/[...all]`.\n\n### Internal API\n`/api/internal/*` endpoints require the `x-internal-secret` header matching the\n`INTERNAL_API_SECRET` environment variable. These are not intended for external use.\n",
@@ -631,10 +631,6 @@
         "tags": [
           "CLI Auth"
         ],
-        "requestBody": {
-          "required": false,
-          "description": "No body required"
-        },
         "responses": {
           "200": {
             "description": "Device authorization initiated",
