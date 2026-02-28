@@ -139,11 +139,55 @@
       {
         "tab": "API Reference",
         "icon": "code",
+        "openapi": "api-reference/openapi.yaml",
         "groups": [
           {
             "group": "Overview",
             "pages": [
               "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "Health",
+            "pages": [
+              "api-reference/health/get-health"
+            ]
+          },
+          {
+            "group": "CLI Authentication",
+            "pages": [
+              "api-reference/cli-auth/initiate-device-auth",
+              "api-reference/cli-auth/poll-device-token"
+            ]
+          },
+          {
+            "group": "CLI Context",
+            "pages": [
+              "api-reference/cli-verify/verify-cli-context"
+            ]
+          },
+          {
+            "group": "Organizations",
+            "pages": [
+              "api-reference/user-portfolio/get-user-portfolio",
+              "api-reference/user-portfolio/warm-user-cache"
+            ]
+          },
+          {
+            "group": "Installations",
+            "pages": [
+              "api-reference/installations/get-installation-repositories",
+              "api-reference/installations/sync-installation-repositories",
+              "api-reference/installations/sync-installation-security",
+              "api-reference/installations/initiate-uninstall"
+            ]
+          },
+          {
+            "group": "AI Chat",
+            "pages": [
+              "api-reference/ai-chat/create-ai-thread",
+              "api-reference/ai-chat/stream-ai-run",
+              "api-reference/ai-chat/get-thread-state"
             ]
           }
         ]

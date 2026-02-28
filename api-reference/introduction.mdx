@@ -1,6 +1,6 @@
 ---
 title: API Reference
-description: REST API for CodePact AI — manage governance programmatically.
+description: REST API for CodePact AI — manage governance programmatically from the CLI or your own integrations.
 ---
 
 ## Base URL
@@ -9,22 +9,58 @@ description: REST API for CodePact AI — manage governance programmatically.
 https://codepact.ai/api
 ```
 
+## API Groups
+
+| Group | Path prefix | Auth |
+|---|---|---|
+| **CLI Authentication** | `/v1/auth/device` | None (public) |
+| **CLI Verify** | `/v1/verify` | Bearer token |
+| **User Portfolio** | `/user/installations` | Session cookie |
+| **Installations** | `/installations/{id}/*` | Session cookie |
+| **AI Chat** | `/ai/langgraph/*` | Session cookie |
+| **Health** | `/health` | None |
+
 ## Authentication
 
-All API requests require a valid session token obtained via GitHub OAuth or a CodePact API token.
+### CLI — Bearer Token
+
+The CLI uses a **Device Authorization Flow** (RFC 8628) to obtain a persistent `cp_`-prefixed token:
 
 ```bash
-Authorization: Bearer <your-token>
+# 1. Initiate the flow
+POST /api/v1/auth/device
+
+# 2. User approves at https://codepact.ai/activate
+# 3. CLI polls until token is issued
+POST /api/v1/auth/device/token  { "device_code": "..." }
+
+# 4. Store and use the token
+Authorization: Bearer cp_a3f8e2b1...
 ```
 
-<Note>
-A formal OpenAPI spec (`openapi.yaml`) is in progress. The interactive API explorer will be available here once published.
-</Note>
+Tokens are persistent (no expiry) and scoped to `['cli']`.
+
+### Dashboard — Session Cookie
+
+All dashboard APIs (`/installations/*`, `/user/*`, `/ai/*`) require a valid session
+established via GitHub OAuth login. The session cookie is set automatically on login
+and sent by the browser on all same-origin requests.
 
 ## Versioning
 
-The API is versioned. The current stable version is `v1`. Breaking changes are always introduced in a new version with a deprecation notice.
+The public CLI API is versioned at `/v1`. The dashboard APIs are unversioned and may change.
 
+## Error Format
+
+All errors return a consistent JSON structure:
+
+```json
+{
+  "error": "machine_readable_code",
+  "error_description": "Human readable message"
+}
 ```
-https://codepact.ai/api/v1/...
-```
+
+## Rate Limits
+
+Not yet enforced. Subject to GitHub API rate limits for operations that proxy to GitHub.
