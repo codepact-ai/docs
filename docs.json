@@ -139,7 +139,7 @@
       {
         "tab": "API Reference",
         "icon": "code",
-        "openapi": "api-reference/openapi.json",
+        "openapi": "openapi.json",
         "groups": [
           {
             "group": "Overview",
