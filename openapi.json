@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "CodePact AI API",
-    "description": "REST API for CodePact AI — the GitHub organization governance platform.\n\n## Authentication\n\n### CLI API (v1)\nThe v1 endpoints use **Bearer token** authentication. Obtain a token via the\nDevice Authorization Flow (`POST /api/v1/auth/device` → `POST /api/v1/auth/device/token`).\n\nTokens are prefixed with `cp_` and are persistent (no expiry by default).\n\n### Dashboard API\nAll `/api/installations/*` and `/api/user/*` endpoints require a valid **session cookie**\nobtained via GitHub OAuth login at `POST /api/auth/[...all]`.\n\n### Internal API\n`/api/internal/*` endpoints require the `x-internal-secret` header matching the\n`INTERNAL_API_SECRET` environment variable. These are not intended for external use.\n",
     "version": "1.0.0",
+    "description": "REST API for CodePact AI — the GitHub organization governance platform.\n\n## Authentication\n\n### CLI API (v1)\nThe v1 endpoints use **Bearer token** authentication. Obtain a token via the\nDevice Authorization Flow (`POST /api/v1/auth/device` → `POST /api/v1/auth/device/token`).\n\nTokens are prefixed with `cp_` and are persistent (no expiry by default).\n\n### Dashboard API\nAll `/api/installations/*` and `/api/user/*` endpoints require a valid **session cookie**\nobtained via GitHub OAuth login at `POST /api/auth/[...all]`.\n\n### Internal API\n`/api/internal/*` endpoints require the `x-internal-secret` header matching the\n`INTERNAL_API_SECRET` environment variable. These are not intended for external use.",
     "contact": {
       "name": "CodePact AI",
       "url": "https://codepact.ai",
@@ -77,9 +77,6 @@
     "schemas": {
       "Error": {
         "type": "object",
-        "required": [
-          "error"
-        ],
         "properties": {
           "error": {
             "type": "string",
@@ -91,22 +88,38 @@
             "description": "Human-readable error description",
             "example": "Token has expired"
           }
-        }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok"
+            ]
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-03-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "status",
+          "timestamp"
+        ]
       },
       "DeviceAuthorizationResponse": {
         "type": "object",
-        "required": [
-          "device_code",
-          "user_code",
-          "verification_uri",
-          "expires_in",
-          "interval"
-        ],
         "properties": {
           "device_code": {
             "type": "string",
             "description": "Opaque device code used to poll for the access token",
-            "example": "a3f8e2b1..."
+            "example": "a3f8e2b1c4d5..."
           },
           "user_code": {
             "type": "string",
@@ -129,26 +142,30 @@
             "description": "Recommended polling interval in seconds",
             "example": 5
           }
-        }
+        },
+        "required": [
+          "device_code",
+          "user_code",
+          "verification_uri",
+          "expires_in",
+          "interval"
+        ]
       },
       "DeviceTokenRequest": {
         "type": "object",
-        "required": [
-          "device_code"
-        ],
         "properties": {
           "device_code": {
             "type": "string",
+            "minLength": 1,
             "description": "The device_code received from POST /v1/auth/device"
           }
-        }
+        },
+        "required": [
+          "device_code"
+        ]
       },
       "DeviceTokenResponse": {
         "type": "object",
-        "required": [
-          "access_token",
-          "token_type"
-        ],
         "properties": {
           "access_token": {
             "type": "string",
@@ -167,13 +184,15 @@
             "description": "Token lifetime in seconds. null = persistent token",
             "example": null
           }
-        }
+        },
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in"
+        ]
       },
       "DeviceTokenPending": {
         "type": "object",
-        "required": [
-          "error"
-        ],
         "properties": {
           "error": {
             "type": "string",
@@ -182,18 +201,17 @@
               "expired_token",
               "invalid_grant"
             ]
+          },
+          "error_description": {
+            "type": "string"
           }
-        }
+        },
+        "required": [
+          "error"
+        ]
       },
       "VerifyResponse": {
         "type": "object",
-        "required": [
-          "is_installed",
-          "installation_url",
-          "tier",
-          "target",
-          "user_id"
-        ],
         "properties": {
           "is_installed": {
             "type": "boolean",
@@ -223,7 +241,14 @@
             "type": "string",
             "description": "Internal CodePact user ID"
           }
-        }
+        },
+        "required": [
+          "is_installed",
+          "installation_url",
+          "tier",
+          "target",
+          "user_id"
+        ]
       },
       "Installation": {
         "type": "object",
@@ -257,7 +282,12 @@
               "suspended"
             ]
           }
-        }
+        },
+        "required": [
+          "id",
+          "github_id",
+          "target_login"
+        ]
       },
       "Repository": {
         "type": "object",
@@ -295,8 +325,9 @@
           },
           "last_scan": {
             "type": "string",
+            "nullable": true,
             "format": "date-time",
-            "nullable": true
+            "description": "ISO 8601 timestamp of the last compliance scan"
           },
           "active_pacts": {
             "type": "array",
@@ -315,18 +346,26 @@
           },
           "synced_at": {
             "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "format": "date-time"
           }
-        }
+        },
+        "required": [
+          "id",
+          "name",
+          "full_name",
+          "private",
+          "default_branch",
+          "html_url",
+          "compliance_score",
+          "last_scan",
+          "active_pacts",
+          "has_config",
+          "synced_at"
+        ]
       },
       "RepositoryListResponse": {
         "type": "object",
-        "required": [
-          "repositories",
-          "installation",
-          "cache_hit"
-        ],
         "properties": {
           "repositories": {
             "type": "array",
@@ -341,17 +380,15 @@
             "type": "boolean",
             "description": "Whether the response was served from the local cache"
           }
-        }
+        },
+        "required": [
+          "repositories",
+          "installation",
+          "cache_hit"
+        ]
       },
       "SyncResponse": {
         "type": "object",
-        "required": [
-          "success",
-          "synced",
-          "errors",
-          "total",
-          "installation"
-        ],
         "properties": {
           "success": {
             "type": "boolean"
@@ -371,25 +408,23 @@
           "installation": {
             "$ref": "#/components/schemas/Installation"
           }
-        }
-      },
-      "SyncSecurityResponse": {
-        "type": "object",
+        },
         "required": [
           "success",
           "synced",
-          "errors"
-        ],
+          "errors",
+          "total",
+          "installation"
+        ]
+      },
+      "SyncSecurityResponse": {
+        "type": "object",
         "properties": {
           "success": {
             "type": "boolean"
           },
           "synced": {
             "type": "object",
-            "required": [
-              "repositories",
-              "alerts"
-            ],
             "properties": {
               "repositories": {
                 "type": "integer",
@@ -399,7 +434,11 @@
                 "type": "integer",
                 "description": "Total security alerts upserted (Dependabot + secret scanning + code scanning)"
               }
-            }
+            },
+            "required": [
+              "repositories",
+              "alerts"
+            ]
           },
           "errors": {
             "type": "array",
@@ -408,16 +447,15 @@
             },
             "description": "Error messages for repos that failed to sync"
           }
-        }
+        },
+        "required": [
+          "success",
+          "synced",
+          "errors"
+        ]
       },
       "UninstallResponse": {
         "type": "object",
-        "required": [
-          "success",
-          "webhookDeleted",
-          "uninstallUrl",
-          "message"
-        ],
         "properties": {
           "success": {
             "type": "boolean"
@@ -440,7 +478,13 @@
           "message": {
             "type": "string"
           }
-        }
+        },
+        "required": [
+          "success",
+          "webhookDeleted",
+          "uninstallUrl",
+          "message"
+        ]
       },
       "OrgStatus": {
         "type": "string",
@@ -449,18 +493,10 @@
           "sso_pending",
           "app_not_installed"
         ],
-        "description": "- `authorized`: OAuth access + GitHub App installed\n- `sso_pending`: App installed but OAuth token lacks SAML SSO grant\n- `app_not_installed`: OAuth access but App not installed on this org\n"
+        "description": "- `authorized`: OAuth access + GitHub App installed\n- `sso_pending`: App installed but OAuth token lacks SAML SSO grant\n- `app_not_installed`: OAuth access but App not installed on this org"
       },
       "OrganizationWithStatus": {
         "type": "object",
-        "required": [
-          "login",
-          "avatar_url",
-          "org_id",
-          "status",
-          "installation_id",
-          "governance"
-        ],
         "properties": {
           "login": {
             "type": "string",
@@ -484,7 +520,6 @@
           "governance": {
             "type": "object",
             "nullable": true,
-            "description": "Governance stats for authorized orgs. null for sso_pending or app_not_installed.",
             "properties": {
               "repoCount": {
                 "type": "integer"
@@ -496,26 +531,29 @@
               "hasConfigRepo": {
                 "type": "boolean"
               }
-            }
+            },
+            "required": [
+              "repoCount",
+              "avgCompliance",
+              "hasConfigRepo"
+            ],
+            "description": "Governance stats for authorized orgs. null for sso_pending or app_not_installed."
           }
-        }
+        },
+        "required": [
+          "login",
+          "avatar_url",
+          "org_id",
+          "status",
+          "installation_id",
+          "governance"
+        ]
       },
       "PortfolioResponse": {
         "type": "object",
-        "required": [
-          "summary",
-          "organizations",
-          "actions"
-        ],
         "properties": {
           "summary": {
             "type": "object",
-            "required": [
-              "total",
-              "authorized",
-              "sso_pending",
-              "app_not_installed"
-            ],
             "properties": {
               "total": {
                 "type": "integer"
@@ -529,7 +567,13 @@
               "app_not_installed": {
                 "type": "integer"
               }
-            }
+            },
+            "required": [
+              "total",
+              "authorized",
+              "sso_pending",
+              "app_not_installed"
+            ]
           },
           "organizations": {
             "type": "array",
@@ -560,41 +604,28 @@
             "type": "integer",
             "description": "Unix timestamp (ms) when the cache was populated"
           }
-        }
+        },
+        "required": [
+          "summary",
+          "organizations",
+          "actions"
+        ]
       },
       "ThreadResponse": {
         "type": "object",
-        "required": [
-          "thread_id"
-        ],
         "properties": {
           "thread_id": {
             "type": "string",
             "format": "uuid",
             "description": "Newly created LangGraph thread ID for an AI chat session"
           }
-        }
-      },
-      "HealthResponse": {
-        "type": "object",
+        },
         "required": [
-          "status",
-          "timestamp"
-        ],
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "ok"
-            ]
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
+          "thread_id"
+        ]
       }
-    }
+    },
+    "parameters": {}
   },
   "paths": {
     "/health": {
@@ -612,10 +643,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HealthResponse"
-                },
-                "example": {
-                  "status": "ok",
-                  "timestamp": "2026-02-28T21:00:00.000Z"
                 }
               }
             }
@@ -627,7 +654,7 @@
       "post": {
         "operationId": "initiateDeviceAuth",
         "summary": "Initiate Device Authorization Flow",
-        "description": "Starts the OAuth Device Authorization Flow (RFC 8628) for the CLI.\n\n1. CLI calls this endpoint → gets `device_code` + `user_code`\n2. CLI displays the `user_code` and directs the user to `verification_uri`\n3. User logs in at `verification_uri/activate` and enters the `user_code`\n4. CLI polls `POST /v1/auth/device/token` with the `device_code` until approved\n",
+        "description": "Starts the OAuth Device Authorization Flow (RFC 8628) for the CLI.\n\n1. CLI calls this endpoint → gets `device_code` + `user_code`\n2. CLI displays the `user_code` and directs the user to `verification_uri`\n3. User logs in at `verification_uri/activate` and enters the `user_code`\n4. CLI polls `POST /v1/auth/device/token` with the `device_code` until approved",
         "tags": [
           "CLI Auth"
         ],
@@ -638,13 +665,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeviceAuthorizationResponse"
-                },
-                "example": {
-                  "device_code": "a3f8e2b1c4d5e6f7a8b9c0d1e2f3a4b5...",
-                  "user_code": "AB12-CD34",
-                  "verification_uri": "https://codepact.ai/activate",
-                  "expires_in": 600,
-                  "interval": 5
                 }
               }
             }
@@ -666,7 +686,7 @@
       "post": {
         "operationId": "pollDeviceToken",
         "summary": "Poll for CLI access token",
-        "description": "Polling endpoint for the CLI to retrieve an access token after the user approves the\ndevice authorization request in the browser.\n\n**Poll every `interval` seconds** (default 5s) until you receive `access_token` or\nan error other than `authorization_pending`.\n\n| Response | Meaning |\n|---|---|\n| `access_token` | User approved — store this token |\n| `authorization_pending` | Still waiting for user — keep polling |\n| `expired_token` | device_code expired — restart the flow |\n| `invalid_grant` | Unexpected state — restart the flow |\n",
+        "description": "Polling endpoint for the CLI to retrieve an access token after the user approves the device authorization request in the browser.\n\n**Poll every `interval` seconds** (default 5s) until you receive `access_token` or an error other than `authorization_pending`.\n\n| Response | Meaning |\n|---|---|\n| `access_token` | User approved — store this token |\n| `authorization_pending` | Still waiting for user — keep polling |\n| `expired_token` | device_code expired — restart the flow |\n| `invalid_grant` | Unexpected state — restart the flow |",
         "tags": [
           "CLI Auth"
         ],
@@ -676,9 +696,6 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/DeviceTokenRequest"
-              },
-              "example": {
-                "device_code": "a3f8e2b1c4d5e6f7a8b9c0d1e2f3a4b5..."
               }
             }
           }
@@ -690,11 +707,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeviceTokenResponse"
-                },
-                "example": {
-                  "access_token": "cp_a3f8e2b1...",
-                  "token_type": "Bearer",
-                  "expires_in": null
                 }
               }
             }
@@ -705,19 +717,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeviceTokenPending"
-                },
-                "examples": {
-                  "pending": {
-                    "value": {
-                      "error": "authorization_pending"
-                    }
-                  },
-                  "expired": {
-                    "value": {
-                      "error": "expired_token",
-                      "error_description": "The device code has expired or is invalid"
-                    }
-                  }
                 }
               }
             }
@@ -729,7 +728,7 @@
       "get": {
         "operationId": "verifyCLIContext",
         "summary": "Verify CLI context",
-        "description": "Checks whether the authenticated CLI user has the CodePact GitHub App installed\nfor the target organization or repository. Also returns the current billing tier.\n\nUsed by the CLI on every command run to validate the connection is healthy.\n",
+        "description": "Checks whether the authenticated CLI user has the CodePact GitHub App installed\nfor the target organization or repository. Also returns the current billing tier.\n\nUsed by the CLI on every command run to validate the connection is healthy.",
         "tags": [
           "CLI Verify"
         ],
@@ -740,24 +739,26 @@
         ],
         "parameters": [
           {
-            "name": "org",
-            "in": "query",
-            "description": "GitHub organization login to verify",
-            "required": false,
             "schema": {
               "type": "string",
+              "description": "GitHub organization login to verify",
               "example": "my-org"
-            }
+            },
+            "required": false,
+            "description": "GitHub organization login to verify",
+            "name": "org",
+            "in": "query"
           },
           {
-            "name": "repo",
-            "in": "query",
-            "description": "Full repository name (owner/repo) to verify",
-            "required": false,
             "schema": {
               "type": "string",
+              "description": "Full repository name (owner/repo) to verify",
               "example": "my-org/api-service"
-            }
+            },
+            "required": false,
+            "description": "Full repository name (owner/repo) to verify",
+            "name": "repo",
+            "in": "query"
           }
         ],
         "responses": {
@@ -767,13 +768,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/VerifyResponse"
-                },
-                "example": {
-                  "is_installed": true,
-                  "installation_url": "https://github.com/apps/codepact-ai/installations/new",
-                  "tier": "free",
-                  "target": "my-org",
-                  "user_id": "usr_abc123"
                 }
               }
             }
@@ -784,10 +778,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": "missing_target",
-                  "error_description": "Provide an org or repo query parameter"
                 }
               }
             }
@@ -805,204 +795,11 @@
         }
       }
     },
-    "/user/installations": {
-      "get": {
-        "operationId": "getUserPortfolio",
-        "summary": "Get user's organization portfolio",
-        "description": "Returns a unified view of all GitHub organizations accessible to the authenticated user,\nenriched with CodePact installation status and governance statistics.\n\nEach organization is tagged with one of three statuses:\n- `authorized` — App installed, OAuth token has access (full governance data available)\n- `sso_pending` — App installed, but OAuth token needs SAML SSO grant\n- `app_not_installed` — OAuth access, but App not installed on this org\n\nResults are cached in Redis for performance. Use `?refresh=true` to bypass the cache.\n",
-        "tags": [
-          "User Portfolio"
-        ],
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "refresh",
-            "in": "query",
-            "description": "Set to `true` to bypass the Redis cache and force a fresh fetch",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Portfolio returned",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PortfolioResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "No GitHub account linked to this session",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user/warm-cache": {
-      "post": {
-        "operationId": "warmUserCache",
-        "summary": "Pre-warm portfolio cache",
-        "description": "Pre-warms the Redis cache for the authenticated user's portfolio. Called automatically\nby the frontend after GitHub OAuth login to ensure a fast first dashboard load.\n\nSkipped if the cache is already fresh (< 1 minute old).\n",
-        "tags": [
-          "User Portfolio"
-        ],
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Cache warmed, skipped (already fresh), or errored",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "status"
-                  ],
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "enum": [
-                        "success",
-                        "skipped",
-                        "error"
-                      ]
-                    },
-                    "reason": {
-                      "type": "string",
-                      "description": "Reason for skipped or error status",
-                      "example": "cache_fresh"
-                    },
-                    "cached": {
-                      "type": "boolean"
-                    },
-                    "organizationCount": {
-                      "type": "integer"
-                    },
-                    "ageMs": {
-                      "type": "integer",
-                      "description": "Cache age in milliseconds (when status is skipped)"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/installations/{id}/repositories": {
-      "get": {
-        "operationId": "getInstallationRepositories",
-        "summary": "List repositories for an installation",
-        "description": "Returns all repositories accessible to the given GitHub App installation,\nenriched with governance and compliance data from the CodePact database.\n\nServes from the local cache when available. Falls back to the GitHub API on\nfirst load or cache miss.\n",
-        "tags": [
-          "Installations"
-        ],
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "GitHub installation ID (integer)",
-            "schema": {
-              "type": "integer",
-              "example": 12345678
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Repository list returned",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RepositoryListResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid installation ID format",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Installation not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/installations/{id}/sync": {
       "post": {
-        "operationId": "syncInstallationRepositories",
-        "summary": "Sync repositories from GitHub",
-        "description": "Triggers a full repository sync for the installation from the GitHub API.\nUpserts all repositories into the CodePact database.\n\nUseful for backfilling when the initial installation webhook was missed or\nthe backend was unavailable.\n",
+        "operationId": "syncInstallation",
+        "summary": "Sync installation repositories",
+        "description": "Triggers a full repository sync for an installation from GitHub API.\n\nUseful for backfilling repositories when the initial installation webhook was missed.",
         "tags": [
           "Installations"
         ],
@@ -1013,14 +810,15 @@
         ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "GitHub installation ID (integer)",
             "schema": {
-              "type": "integer",
-              "example": 12345678
-            }
+              "type": "string",
+              "description": "GitHub installation ID",
+              "example": "12345678"
+            },
+            "required": true,
+            "description": "GitHub installation ID",
+            "name": "id",
+            "in": "path"
           }
         ],
         "responses": {
@@ -1030,17 +828,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SyncResponse"
-                },
-                "example": {
-                  "success": true,
-                  "synced": 47,
-                  "errors": 0,
-                  "total": 47,
-                  "installation": {
-                    "id": "550e8400-e29b-41d4-a716-446655440000",
-                    "github_id": 12345678,
-                    "target_login": "my-org"
-                  }
                 }
               }
             }
@@ -1074,6 +861,16 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "Sync failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -1081,8 +878,8 @@
     "/installations/{id}/sync-security": {
       "post": {
         "operationId": "syncInstallationSecurity",
-        "summary": "Sync security data for all repositories",
-        "description": "Fetches security data from the GitHub API for every repository in this installation\nand populates the CodePact database:\n\n- **Branch protection** — required reviews, signed commits, enforce admins\n- **Dependabot alerts** — severity breakdown: critical / high / medium / low\n- **Secret scanning alerts** — count of open leaks\n- **Code scanning alerts** — count of open findings + tools used\n\nThis is an expensive operation — it makes parallel GitHub API calls per repository.\nTypically triggered by the Reconciler on a schedule, not called manually.\n",
+        "summary": "Sync security alerts",
+        "description": "Syncs Dependabot alerts, secret scanning alerts, and code scanning alerts from GitHub\nfor all repositories in the installation.",
         "tags": [
           "Installations"
         ],
@@ -1093,31 +890,24 @@
         ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "GitHub installation ID (integer)",
             "schema": {
-              "type": "integer",
-              "example": 12345678
-            }
+              "type": "string",
+              "description": "GitHub installation ID",
+              "example": "12345678"
+            },
+            "required": true,
+            "description": "GitHub installation ID",
+            "name": "id",
+            "in": "path"
           }
         ],
         "responses": {
           "200": {
-            "description": "Security sync completed (with or without partial errors)",
+            "description": "Security sync completed",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SyncSecurityResponse"
-                },
-                "example": {
-                  "success": true,
-                  "synced": {
-                    "repositories": 47,
-                    "alerts": 12
-                  },
-                  "errors": []
                 }
               }
             }
@@ -1157,44 +947,43 @@
     },
     "/installations/{id}/uninstall": {
       "post": {
-        "operationId": "initiateUninstall",
-        "summary": "Initiate clean uninstall",
-        "description": "Prepares a clean uninstall by:\n1. Deleting the organization webhook (while the installation token is still valid)\n2. Returning the GitHub URL for the user to complete the App uninstall\n\nThe user must visit the returned `uninstallUrl` to complete the uninstall on GitHub's side.\n",
+        "operationId": "uninstallInstallation",
+        "summary": "Uninstall GitHub App",
+        "description": "Initiates the GitHub App uninstallation flow for an installation.\n\nCleans up the org webhook and returns the GitHub URL to complete the uninstall.",
         "tags": [
           "Installations"
         ],
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "GitHub installation ID (integer)",
             "schema": {
-              "type": "integer",
-              "example": 12345678
-            }
+              "type": "string",
+              "description": "GitHub installation ID",
+              "example": "12345678"
+            },
+            "required": true,
+            "description": "GitHub installation ID",
+            "name": "id",
+            "in": "path"
           }
         ],
         "responses": {
           "200": {
-            "description": "Uninstall initiated",
+            "description": "Uninstall prepared",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UninstallResponse"
-                },
-                "example": {
-                  "success": true,
-                  "webhookDeleted": true,
-                  "webhookError": null,
-                  "uninstallUrl": "https://github.com/organizations/my-org/settings/installations/12345678",
-                  "message": "Webhook cleaned up. Redirecting to GitHub to complete uninstall."
                 }
               }
             }
           },
-          "404": {
-            "description": "Installation not found or already deleted",
+          "401": {
+            "description": "Not authenticated",
             "content": {
               "application/json": {
                 "schema": {
@@ -1203,8 +992,8 @@
               }
             }
           },
-          "500": {
-            "description": "Failed to initiate uninstall",
+          "404": {
+            "description": "Installation not found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1216,29 +1005,111 @@
         }
       }
     },
-    "/ai/langgraph/threads": {
-      "post": {
-        "operationId": "createAIThread",
-        "summary": "Create AI chat thread",
-        "description": "Creates a new LangGraph thread for a CodePact AI chat session.\nReturns a `thread_id` that must be passed to subsequent streaming run requests.\n",
+    "/installations/{id}/repositories": {
+      "get": {
+        "operationId": "listInstallationRepositories",
+        "summary": "List repositories",
+        "description": "Returns all repositories for an installation, enriched with governance and\ncompliance data. Served from local cache when available.",
         "tags": [
-          "AI Chat"
+          "Installations"
         ],
         "security": [
           {
             "SessionCookie": []
           }
         ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "description": "GitHub installation ID",
+              "example": "12345678"
+            },
+            "required": true,
+            "description": "GitHub installation ID",
+            "name": "id",
+            "in": "path"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Thread created",
+            "description": "Repository list with governance data",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ThreadResponse"
-                },
-                "example": {
-                  "thread_id": "550e8400-e29b-41d4-a716-446655440000"
+                  "$ref": "#/components/schemas/RepositoryListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid installation ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Installation not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/installations": {
+      "get": {
+        "operationId": "getUserPortfolio",
+        "summary": "Get user portfolio",
+        "description": "Returns a portfolio-wide view of all organizations the authenticated user has access to,\nwith 3 possible states per org: `authorized`, `sso_pending`, or `app_not_installed`.\n\nResponses are cached in Redis per user for fast subsequent loads.",
+        "tags": [
+          "User Portfolio"
+        ],
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ],
+              "description": "Set to \"true\" to bypass cache and force a fresh fetch"
+            },
+            "required": false,
+            "description": "Set to \"true\" to bypass cache and force a fresh fetch",
+            "name": "refresh",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User portfolio",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PortfolioResponse"
                 }
               }
             }
@@ -1256,118 +1127,97 @@
         }
       }
     },
-    "/ai/langgraph/threads/{threadId}/runs/stream": {
+    "/user/warm-cache": {
       "post": {
-        "operationId": "streamAIRun",
-        "summary": "Stream AI agent response",
-        "description": "Runs the CodePact AI agent on the given thread and streams the response using\nServer-Sent Events (SSE). Send the user's message in the request body.\n\nResponses are streamed as SSE events compatible with the `@assistant-ui/react-langgraph`\nfrontend library.\n",
+        "operationId": "warmUserCache",
+        "summary": "Pre-warm portfolio cache",
+        "description": "Triggers background population of the Redis portfolio cache for the authenticated user.\n\nCalled automatically on login to ensure near-zero latency on first dashboard load.",
         "tags": [
-          "AI Chat"
+          "User Portfolio"
         ],
         "security": [
           {
             "SessionCookie": []
           }
         ],
-        "parameters": [
-          {
-            "name": "threadId",
-            "in": "path",
-            "required": true,
-            "description": "Thread ID from POST /ai/langgraph/threads",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "messages": {
-                    "type": "array",
-                    "description": "Conversation messages",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "role": {
-                          "type": "string",
-                          "enum": [
-                            "user",
-                            "assistant"
-                          ]
-                        },
-                        "content": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "SSE stream of AI agent events",
-            "content": {
-              "text/event-stream": {
-                "schema": {
-                  "type": "string",
-                  "description": "Server-Sent Events stream"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Not authenticated"
-          }
-        }
-      }
-    },
-    "/ai/langgraph/threads/{threadId}/state": {
-      "get": {
-        "operationId": "getThreadState",
-        "summary": "Get AI thread state",
-        "description": "Returns the current state of a LangGraph thread, including message history.",
-        "tags": [
-          "AI Chat"
-        ],
-        "security": [
-          {
-            "SessionCookie": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "threadId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Thread state returned",
+            "description": "Cache warming initiated",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "description": "LangGraph thread state object"
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
                 }
               }
             }
           },
           "401": {
-            "description": "Not authenticated"
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/langgraph/threads": {
+      "post": {
+        "operationId": "createAIThread",
+        "summary": "Create AI chat thread",
+        "description": "Creates a new LangGraph thread for an AI assistant session.\n\nReturns a `thread_id` which must be passed to subsequent stream requests.",
+        "tags": [
+          "AI Chat"
+        ],
+        "security": [
+          {
+            "SessionCookie": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thread created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ThreadResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Failed to create thread",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         }
       }
@@ -1375,8 +1225,8 @@
     "/internal/invalidate-cache": {
       "post": {
         "operationId": "invalidateCache",
-        "summary": "Invalidate Redis cache",
-        "description": "Internal endpoint used by the webhook processor to invalidate frontend caches\nafter installation events (created/deleted).\n\n**Not for external use.** Requires the `x-internal-secret` header.\n\n| `type` | Effect |\n|---|---|\n| `portfolio` | Clears all `portfolio:*` keys (user installation lists) |\n| `teams` | Clears all `teams:*` keys |\n| `all` | Clears portfolio, teams, and repos caches |\n",
+        "summary": "Invalidate cache",
+        "description": "Internal endpoint for the webhook processor to invalidate frontend Redis caches.\n\nRequires the `x-internal-secret` header. **Not intended for external use.**",
         "tags": [
           "Internal"
         ],
@@ -1391,9 +1241,6 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "type"
-                ],
                 "properties": {
                   "type": {
                     "type": "string",
@@ -1401,12 +1248,13 @@
                       "portfolio",
                       "teams",
                       "all"
-                    ]
+                    ],
+                    "description": "Which cache group to invalidate"
                   }
-                }
-              },
-              "example": {
-                "type": "portfolio"
+                },
+                "required": [
+                  "type"
+                ]
               }
             }
           }
@@ -1422,7 +1270,10 @@
                     "success": {
                       "type": "boolean"
                     }
-                  }
+                  },
+                  "required": [
+                    "success"
+                  ]
                 }
               }
             }
@@ -1438,7 +1289,7 @@
             }
           },
           "401": {
-            "description": "Invalid or missing internal secret",
+            "description": "Missing or invalid internal secret",
             "content": {
               "application/json": {
                 "schema": {
