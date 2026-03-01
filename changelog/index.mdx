@@ -3,7 +3,17 @@ title: Changelog
 description: Updates and releases for CodePact AI.
 ---
 
+## March 2026
+
+### Bug Fixes
+
+- **Onboarding install link corrected**: The "Install CodePact App" button in the onboarding flow now correctly links to `github.com/apps/codepact-ai/installations/select_target`. The previous link used an incorrect app slug and deprecated endpoint path.
+- **Multi-region webhook reliability**: Resolved a connectivity issue where webhooks were not being processed after installation. The NATS JetStream pub/sub chain is now fully operational across all event types (lifecycle, repository, team, security, push).
+
+---
+
 ## February 2026
+
 
 ### AI Policy Assistant
 The AI chat assistant is now available in the Pact Editor. Ask questions like "What repos are missing branch protection?" or "Which team has the strictest settings?" and get instant answers.
