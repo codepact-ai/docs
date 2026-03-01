@@ -1,0 +1,119 @@
+---
+title: 'apply'
+description: 'Apply codepact.yaml changes to a GitHub repository'
+---
+
+Apply the governance settings from a local `codepact.yaml` to a repository on GitHub. Always shows a plan first and asks for confirmation.
+
+```bash
+codepact apply [owner/repo] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `owner/repo` | No | Target repository (inferred from git remote if omitted) |
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--file`, `-f` | `codepact.yaml` | Path to codepact.yaml |
+| `--pact` | *(first pact)* | Pact name to apply |
+| `--auto-approve` | `false` | Skip confirmation prompt (for CI) |
+| `--dry-run` | `false` | Show plan only, apply nothing (identical to `codepact plan`) |
+| `--skip-collaborators` | `false` | Skip collaborator changes |
+| `--skip-environments` | `false` | Skip environment changes |
+
+## Examples
+
+```bash
+# Interactive apply (shows plan + asks for confirmation)
+codepact apply
+
+# Apply to an explicit repo
+codepact apply codepact-ai/security-test-repo
+
+# Non-interactive CI mode
+codepact apply --auto-approve
+
+# Preview only (no changes)
+codepact apply --dry-run
+
+# Use a specific policy file and pact
+codepact apply codepact-ai/my-repo --file policies/strict.yaml --pact soc2-baseline
+```
+
+## Workflow
+
+```
+1. Read codepact.yaml
+2. Fetch live GitHub state
+3. Compute diff (same as `codepact plan`)
+4. Display plan
+5. Ask for confirmation (skipped with --auto-approve)
+6. Apply changes via GitHub API
+7. Report results
+```
+
+## Example Output
+
+```
+🔍 Fetching live state for codepact-ai/security-test-repo...
+
+CodePact will perform the following changes to codepact-ai/security-test-repo:
+
+  # repository
+  ~ repository.has_wiki  true → false
+
+  # branch_protection
+  ~ branch_protection.required_approving_review_count  1 → 2
+
+  # team_access
+  + team_access.platform-ops = push
+
+Plan: +1 to add, ~2 to change
+
+Do you want to apply these changes? [y/N]: y
+
+🚀 Applying changes...
+  ✅ ~ repository.has_wiki  true → false
+  ✅ ~ branch_protection.required_approving_review_count  1 → 2
+  ✅ + team_access.platform-ops = push
+
+Apply complete: 3 applied, 0 skipped, 0 failed.
+```
+
+## What Gets Applied
+
+| Resource | GitHub API |
+|---|---|
+| Repository settings | `PATCH /repos/{owner}/{repo}` |
+| Branch protection | `PUT /repos/{owner}/{repo}/branches/{branch}/protection` |
+| Team access | `PUT /orgs/{org}/teams/{slug}/repos/{owner}/{repo}` |
+| Direct collaborators | `PUT /repos/{owner}/{repo}/collaborators/{user}` |
+
+<Warning>
+`apply` makes **real changes** to your GitHub repository. Always review the plan before confirming.
+</Warning>
+
+## CI Integration
+
+```yaml
+- name: Apply governance policy
+  run: codepact apply --auto-approve
+  env:
+    CODEPACT_TOKEN: ${{ secrets.CODEPACT_TOKEN }}
+```
+
+<Tip>
+Use `codepact plan --exit-code` as a CI gate to detect drift without applying, and only run `codepact apply` on a scheduled basis or manual trigger.
+</Tip>
+
+## Exit Codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Success — all changes applied (or no changes needed) |
+| `1` | Error — one or more changes failed to apply |
