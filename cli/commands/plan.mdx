@@ -1,0 +1,91 @@
+---
+title: 'plan'
+description: 'Preview what changes codepact.yaml would make to a repository'
+---
+
+Compare a local `codepact.yaml` against live GitHub state and display a human-readable plan — no changes are made.
+
+```bash
+codepact plan [owner/repo] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `owner/repo` | No | Target repository (inferred from git remote if omitted) |
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--file`, `-f` | `codepact.yaml` | Path to codepact.yaml |
+| `--pact` | *(first pact)* | Pact name to evaluate from the config |
+| `--format` | `text` | Output format: `text` or `json` |
+| `--exit-code` | `false` | Exit with code `2` if there are changes (for CI gates) |
+| `--skip-collaborators` | `false` | Skip fetching collaborators |
+| `--skip-environments` | `false` | Skip fetching environments |
+
+## Examples
+
+```bash
+# Plan against the current git repo (reads codepact.yaml from current dir)
+codepact plan
+
+# Explicit target
+codepact plan codepact-ai/security-test-repo
+
+# Use a custom config file
+codepact plan codepact-ai/my-repo --file policies/strict.yaml
+
+# CI gate: fail the pipeline if there's drift
+codepact plan --exit-code   # exits 0 (no changes) or 2 (changes detected)
+
+# Machine-readable output for scripting
+codepact plan --format json | jq '.changes[].field'
+```
+
+## Example Output
+
+```
+CodePact will perform the following changes to codepact-ai/security-test-repo:
+
+  # repository
+  ~ repository.visibility  public → private
+  ~ repository.has_wiki  true → false
+
+  # branch_protection
+  + branch_protection.enforce_admins = true
+  ~ branch_protection.required_approving_review_count  1 → 2
+
+  # team_access
+  + team_access.platform-ops = push
+  - team_access.legacy-team (was: admin)
+
+Plan: +1 to add, ~3 to change, -1 to remove
+
+Run 'codepact apply codepact-ai/security-test-repo' to apply these changes.
+```
+
+## Exit Codes
+
+| Code | Meaning |
+|---|---|
+| `0` | Success — no changes or `--exit-code` not set |
+| `1` | Error (API failure, config parse error, etc.) |
+| `2` | Changes detected (only when `--exit-code` is set) |
+
+## CI Integration
+
+Add drift detection to your GitHub Actions workflow:
+
+```yaml
+- name: Check governance drift
+  run: codepact plan --exit-code --format json
+  env:
+    CODEPACT_TOKEN: ${{ secrets.CODEPACT_TOKEN }}
+```
+
+<Note>
+`plan` only reads from GitHub and never writes. It is always safe to run.
+</Note>

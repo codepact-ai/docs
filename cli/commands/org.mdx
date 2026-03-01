@@ -1,0 +1,62 @@
+---
+title: 'org'
+description: 'View and manage GitHub organization settings'
+---
+
+Commands for inspecting organization-level information.
+
+## `org view`
+
+Display organization details and CodePact installation status.
+
+```bash
+codepact org view [org] [flags]
+```
+
+### Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `org` | No | Organization login (defaults to configured org) |
+
+### Example
+
+```bash
+$ codepact org view codepact-ai
+Organization: codepact-ai
+Plan: Pro
+Repositories: 12 total, 10 monitored
+CodePact App: ✓ Installed
+```
+
+## `org members`
+
+List members of the organization.
+
+```bash
+codepact org members [org] [flags]
+```
+
+### Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--limit` | `30` | Maximum number of members to list |
+| `--role` | `all` | Filter by role: `all`, `admin`, `member` |
+
+### Example
+
+```bash
+$ codepact org members codepact-ai
+heintonny (admin)
+alice (member)
+bob (member)
+```
+
+## `org settings`
+
+View organization-level settings as seen by CodePact.
+
+```bash
+codepact org settings [org]
+```

@@ -1,0 +1,70 @@
+---
+title: 'validate'
+description: 'Validate a codepact.yaml file for syntax and schema errors'
+---
+
+Check a `codepact.yaml` file against the CodePact schema before pushing.
+
+```bash
+codepact validate [file] [flags]
+```
+
+## Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `file` | No | Path to the YAML file (default: `codepact.yaml`) |
+
+## Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--online` | `false` | Run additional server-side context-aware validation |
+
+## Examples
+
+```bash
+# Validate codepact.yaml in the current directory
+codepact validate
+
+# Validate a specific file
+codepact validate policies/production.yaml
+
+# Server-side validation (requires authentication)
+codepact validate --online
+```
+
+## Example Output
+
+**On success:**
+```
+✅ codepact.yaml is valid!
+```
+
+**On error:**
+```
+❌ codepact.yaml has 2 error(s):
+
+  1. must be >= 1
+     Path: /pacts/org-baseline/settings/branch_protection/required_reviewers
+     Line: 12
+     Hint: Set required_reviewers to at least 1
+
+  2. invalid visibility value "publc"
+     Path: /pacts/org-baseline/settings/repository/visibility
+     Line: 8
+     Hint: Must be "public", "private", or "internal"
+```
+
+## Using in CI
+
+```yaml
+- name: Validate governance config
+  run: codepact validate --online
+  env:
+    CODEPACT_TOKEN: ${{ secrets.CODEPACT_TOKEN }}
+```
+
+<Tip>
+Run `codepact validate` as a pre-commit hook to catch schema errors before they reach your repo.
+</Tip>

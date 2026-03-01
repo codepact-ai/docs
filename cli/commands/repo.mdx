@@ -1,0 +1,99 @@
+---
+title: 'repo'
+description: 'Manage GitHub repositories from the CLI'
+---
+
+Commands for inspecting and managing GitHub repositories.
+
+## Commands
+
+| Command | Description |
+|---|---|
+| `codepact repo list` | List repositories in an organization |
+| `codepact repo view` | View repository details |
+| `codepact repo export` | Export live repo state as a `codepact.yaml` |
+
+## `repo export`
+
+Fetch the live governance state of a repository and render it as a ready-to-edit `codepact.yaml`.
+
+```bash
+codepact repo export [owner/repo] [flags]
+```
+
+### Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `owner/repo` | No | Target repository (inferred from git remote if omitted) |
+
+### Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--output` | *(stdout)* | Write to a file instead of stdout |
+| `--format`, `-f` | `yaml` | Output format: `yaml` or `json` |
+| `--pact-name` | `exported-<repo>` | Name to use for the generated pact |
+| `--skip-collaborators` | `false` | Skip fetching direct collaborators (requires admin) |
+| `--skip-environments` | `false` | Skip fetching deployment environments |
+
+### What is exported
+
+| Resource | GitHub API Endpoint |
+|---|---|
+| Repository settings | `GET /repos/{owner}/{repo}` |
+| Branch protection | `GET /repos/{owner}/{repo}/branches/{branch}/protection` |
+| Rulesets | `GET /repos/{owner}/{repo}/rulesets` |
+| Teams with access | `GET /repos/{owner}/{repo}/teams` |
+| Direct collaborators | `GET /repos/{owner}/{repo}/collaborators` |
+| Topics | `GET /repos/{owner}/{repo}/topics` |
+| Custom properties | `GET /repos/{owner}/{repo}/properties/values` |
+| Environments | `GET /repos/{owner}/{repo}/environments` |
+| Secret names | `GET /repos/{owner}/{repo}/actions/secrets` |
+
+### Examples
+
+```bash
+# From inside a git repo (infers owner/repo from origin remote)
+codepact repo export
+
+# Explicit target
+codepact repo export codepact-ai/security-test-repo
+
+# Write directly to a file
+codepact repo export codepact-ai/my-repo --output codepact.yaml
+
+# JSON output for machine processing
+codepact repo export codepact-ai/my-repo --format json | jq .pacts
+
+# Skip slow API calls if you only need core settings
+codepact repo export --skip-collaborators --skip-environments
+```
+
+### Required Permissions
+
+A full export requires **admin access** to the repository. Without it, restricted resources (collaborators, environments, secrets) are skipped with a warning.
+
+| Resource | Minimum permission |
+|---|---|
+| Repository settings | read |
+| Branch protection | admin |
+| Rulesets | admin |
+| Teams | org member |
+| Collaborators | admin |
+| Environments | admin |
+| Secret names | admin |
+
+<Note>
+Secret **values** are write-only — only secret names are exported.
+</Note>
+
+## `repo list`
+
+```bash
+codepact repo list [flags]
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `--limit` | `30` | Maximum number of repositories to list |

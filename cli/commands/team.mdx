@@ -1,0 +1,63 @@
+---
+title: 'team'
+description: 'View and manage GitHub team access to repositories'
+---
+
+Commands for working with GitHub teams.
+
+## `team list`
+
+List teams in an organization.
+
+```bash
+codepact team list [org] [flags]
+```
+
+### Flags
+
+| Flag | Default | Description |
+|---|---|---|
+| `--limit` | `30` | Maximum number of teams to list |
+
+### Example
+
+```bash
+$ codepact team list codepact-ai
+SLUG            NAME            PRIVACY   REPOS
+platform-ops    Platform Ops    closed    8
+security        Security        secret    3
+engineering     Engineering     closed    12
+```
+
+## `team view`
+
+View a specific team and its repository access.
+
+```bash
+codepact team view [team-slug] [flags]
+```
+
+### Aliases
+
+`get`, `show`
+
+### Example
+
+```bash
+$ codepact team view platform-ops
+Team: platform-ops (Platform Ops)
+Privacy: closed
+Members: 5
+
+Repository Access:
+  codepact-ai/webhook-processor  push
+  codepact-ai/security-test-repo admin
+```
+
+## `team repos`
+
+List repositories a team has access to.
+
+```bash
+codepact team repos [team-slug]
+```

@@ -126,6 +126,7 @@
               "cli/commands/auth",
               "cli/commands/org",
               "cli/commands/repo",
+              "cli/commands/plan",
               "cli/commands/team",
               "cli/commands/pact",
               "cli/commands/validate",

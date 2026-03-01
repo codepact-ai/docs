@@ -1,0 +1,35 @@
+---
+title: 'Global Flags'
+description: 'Flags available on every codepact command'
+---
+
+The following flags are available on _every_ `codepact` command.
+
+## Flags
+
+| Flag | Short | Default | Description |
+|---|---|---|---|
+| `--org` | `-o` | *(from config)* | GitHub organization login |
+| `--token` | `-t` | *(from config)* | GitHub Personal Access Token |
+| `--api-url` | | `https://api.codepact.ai` | CodePact SaaS API base URL |
+| `--help` | `-h` | | Show help for the command |
+| `--version` | | | Show CLI version |
+
+## Precedence
+
+When the same value is set in multiple places, this order wins (highest to lowest):
+
+1. **Explicit flag** on the command line
+2. **Environment variable** (`CODEPACT_TOKEN`, `CODEPACT_ORG`)
+3. **Config file** (`~/.config/codepact/config.yaml`)
+
+## Examples
+
+```bash
+# Use a specific org and token for a single command
+codepact repo list --org myorg --token ghp_xxxx
+
+# Override just the token
+export CODEPACT_TOKEN=ghp_xxxx
+codepact org view myorg
+```

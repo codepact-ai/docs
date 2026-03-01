@@ -1,0 +1,56 @@
+---
+title: 'auth'
+description: 'Authenticate the CodePact CLI with GitHub and CodePact'
+---
+
+Commands for managing authentication.
+
+## `auth login`
+
+Authenticate the CLI using the OAuth Device Flow. This opens your browser to complete authentication.
+
+```bash
+codepact auth login
+```
+
+After running this command:
+- A one-time code is displayed in the terminal
+- Your browser opens to GitHub to authorize the app
+- On success, credentials are saved to `~/.config/codepact/config.yaml`
+
+### Example
+
+```bash
+$ codepact auth login
+! First, copy your one-time code: ABCD-1234
+Press Enter to open https://github.com/login/device in your browser...
+Waiting for authorization...
+✓ Successfully authenticated!
+```
+
+## `auth status`
+
+Show current authentication status.
+
+```bash
+codepact auth status
+```
+
+### Example output
+
+```bash
+$ codepact auth status
+Logged in to codepact.ai as heintonny (GitHub: @heintonny)
+Token: ghp_xxxx...xxxx
+Organization: codepact-ai
+```
+
+## Troubleshooting
+
+**Token expired or revoked**: Run `codepact auth login` again to re-authenticate.
+
+**Missing organization access**: Ensure your GitHub account has access to the organization and the CodePact GitHub App is installed.
+
+<Card title="Install the GitHub App →" icon="github" href="https://github.com/apps/codepact">
+  Install CodePact on your organization to enable enforcement.
+</Card>

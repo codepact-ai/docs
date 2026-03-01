@@ -1,0 +1,106 @@
+---
+title: 'pact'
+description: 'Manage CodePact pacts for your repositories'
+---
+
+Commands for viewing and evaluating pacts.
+
+## `pact list`
+
+List pacts configured for an organization.
+
+```bash
+codepact pact list [org] [flags]
+```
+
+### Example
+
+```bash
+$ codepact pact list codepact-ai
+NAME              ENFORCEMENT  REPOS
+org-baseline      enforced     12
+platform-team     audit         4
+soc2-profile      enforced      8
+```
+
+## `pact view`
+
+View a specific pact and its settings.
+
+```bash
+codepact pact view [pact-name] [flags]
+```
+
+### Arguments
+
+| Argument | Required | Description |
+|---|---|---|
+| `pact-name` | Yes | Name of the pact to view |
+
+### Aliases
+
+`get`, `show`
+
+### Example
+
+```bash
+$ codepact pact view org-baseline
+Name: org-baseline
+Enforcement: enforced
+Repositories: 12
+
+Settings:
+  Branch Protection:
+    - enforce_admins: true
+    - required_reviewers: 2
+  Security:
+    - secret_scanning: true
+    - dependabot_alerts: true
+```
+
+## `pact status`
+
+Check compliance status of a repository against its assigned pacts.
+
+```bash
+codepact pact status [owner/repo]
+```
+
+### Example
+
+```bash
+$ codepact pact status codepact-ai/security-test-repo
+Repository: codepact-ai/security-test-repo
+Pact: org-baseline (enforced)
+
+✅ Branch protection: enforce_admins enabled
+✅ Secret scanning: enabled
+❌ Required reviewers: 1 (required: 2)
+⚠️  Dependabot alerts: disabled (warn mode)
+
+Compliance: 2/4 rules passing
+```
+
+## `pact evaluate`
+
+Evaluate what the merged effective settings are for a repository.
+
+```bash
+codepact pact evaluate [owner/repo]
+```
+
+## `pact diff`
+
+Show the difference between a repository's current state and its pact requirements.
+
+```bash
+codepact pact diff [owner/repo]
+```
+
+### Example
+
+```bash
+$ codepact pact diff codepact-ai/security-test-repo
+~ required_approving_review_count: 1 → 2  (required by: org-baseline)
+- allow_force_pushes: true → false        (required by: org-baseline)
+```

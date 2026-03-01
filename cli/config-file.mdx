@@ -1,0 +1,44 @@
+---
+title: 'Config File'
+description: 'How the CodePact CLI stores and reads configuration'
+---
+
+The CLI persists your login credentials and preferences in a config file so you don't need to pass `--token` on every command.
+
+## Location
+
+| OS | Path |
+|---|---|
+| macOS / Linux | `~/.config/codepact/config.yaml` |
+| Windows | `%APPDATA%\codepact\config.yaml` |
+
+## Contents
+
+```yaml
+token: ghp_xxxxxxxxxxxx      # GitHub PAT (set by `codepact auth login`)
+codepact_token: eyJ...       # CodePact session token (set by `codepact auth login`)
+org: my-org                  # Default organization
+api_url: https://api.codepact.ai
+```
+
+## Setting Values
+
+Values are set automatically by `codepact auth login`. You can also set them manually:
+
+```bash
+# Set default org
+codepact auth login   # interactively sets all values
+
+# Override for a single command without changing the config
+codepact repo list --org other-org
+```
+
+## Environment Variables
+
+All config file values can be overridden with environment variables:
+
+| Variable | Overrides |
+|---|---|
+| `CODEPACT_TOKEN` | `token` |
+| `CODEPACT_ORG` | `org` |
+| `CODEPACT_API_URL` | `api_url` |
