@@ -5,6 +5,17 @@ description: Updates and releases for CodePact AI.
 
 ## March 2026
 
+### CLI Improvements
+
+- **`codepact --version`**: The CLI now reports its exact build version via `codepact --version`.
+  The version string is baked in at install time from the git commit SHA.
+- **`repo export` — merge strategies**: `repo export` now includes `allow_squash_merge`,
+  `allow_merge_commit`, `allow_rebase_merge`, `allow_auto_merge`, and `delete_branch_on_merge`
+  in the exported `codepact.yaml`.
+- **`repo export` — branch protection warning**: The warning for repositories using Rulesets
+  instead of classic Branch Protection now reads "not configured — repo may use Rulesets instead"
+  rather than the generic "not accessible" message.
+
 ### Bug Fixes
 
 - **Onboarding install link corrected**: The "Install CodePact App" button in the onboarding flow now correctly links to `github.com/apps/codepact-ai/installations/select_target`. The previous link used an incorrect app slug and deprecated endpoint path.
